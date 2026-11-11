@@ -176,3 +176,11 @@
   .booking-navigation .btn { padding: 10px 12px; font-size: 11px; }
   .booking-footer { font-size: 8px; }
 }
+
+.booking-honeypot {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+}

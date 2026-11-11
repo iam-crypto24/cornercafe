@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,13 +13,14 @@ import {
   Users,
 } from 'lucide-react';
 import { MENU_ITEMS, TIME_SLOTS } from '../data/cafeData';
+import { apiFetch, apiJson } from '../lib/api';
 import type { Booking, CafeTable, MenuItem, PreOrderItem, WizardState } from '../types';
 import { SeatCube } from './SeatCube';
 import './booking-flow.css';
 
 interface BookingWizardProps {
   tables: CafeTable[];
-  onBookingComplete: (newBooking: Booking) => Promise<Booking>;
+  onBookingComplete: (newBooking: Booking, idempotencyKey: string, formToken: string, website: string) => Promise<Booking>;
   onGoToAdmin: () => void;
   onGoHome: () => void;
   initialDate?: string;
@@ -82,6 +83,9 @@ export function BookingWizard({
   const [submitting, setSubmitting] = useState(false);
   const [completedBooking, setCompletedBooking] = useState<Booking | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [website, setWebsite] = useState('');
+  const formToken = useRef('');
+  const idempotency = useRef<{ fingerprint: string; key: string } | null>(null);
   const today = todayAsDateInput();
   const preOrderTotal = formData.preOrders.reduce((sum, entry) => sum + entry.item.price * entry.quantity, 0);
   const categories = ['All', ...Array.from(new Set(MENU_ITEMS.map((item) => item.category)))];
@@ -94,12 +98,12 @@ export function BookingWizard({
   useEffect(() => {
     let active = true;
     setAvailabilityLoading(true);
-    fetch(`/api/availability?date=${encodeURIComponent(formData.date)}&partySize=${formData.partySize}`)
-      .then(async (response) => {
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result?.error?.message ?? 'Could not load live seating availability.');
+    apiFetch(`/api/availability?date=${encodeURIComponent(formData.date)}&partySize=${formData.partySize}`)
+      .then((response) => apiJson<{ tables: CafeTable[]; formToken: string }>(response))
+      .then((result) => {
         if (active) {
           setAvailableTables(result.tables ?? []);
+          formToken.current = result.formToken || formToken.current;
           setAvailabilityError(null);
         }
       })
@@ -118,11 +122,11 @@ export function BookingWizard({
     }
     let active = true;
     setAvailableSlots([]);
-    fetch(`/api/availability?date=${encodeURIComponent(formData.date)}&partySize=${formData.partySize}&tableId=${encodeURIComponent(table.id)}`)
-      .then(async (response) => {
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result?.error?.message ?? 'Could not load available times.');
+    apiFetch(`/api/availability?date=${encodeURIComponent(formData.date)}&partySize=${formData.partySize}&tableId=${encodeURIComponent(table.id)}`)
+      .then((response) => apiJson<{ availableSlots: string[]; formToken: string }>(response))
+      .then((result) => {
         if (active) {
+          formToken.current = result.formToken || formToken.current;
           const slots: string[] = result.availableSlots ?? [];
           setAvailableSlots(slots);
           setAvailabilityError(null);
@@ -193,8 +197,8 @@ export function BookingWizard({
       return;
     }
     const booking: Booking = {
-      id: `b_${Date.now()}`,
-      referenceNumber: `CC-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: '',
+      referenceNumber: '',
       date: formData.date,
       timeSlot: formData.timeSlot,
       partySize: formData.partySize,
@@ -207,10 +211,21 @@ export function BookingWizard({
       status: 'pending',
       createdAt: new Date().toISOString(),
     };
+    const fingerprint = JSON.stringify({
+      date: booking.date, timeSlot: booking.timeSlot, partySize: booking.partySize,
+      table: booking.table.id, name: booking.customerName, phone: booking.customerPhone,
+      email: booking.customerEmail, requests: booking.specialRequests,
+      preOrders: booking.preOrders.map(({ item, quantity }) => [item.id, quantity]),
+    });
+    if (!idempotency.current || idempotency.current.fingerprint !== fingerprint) {
+      idempotency.current = { fingerprint, key: crypto.randomUUID() };
+    }
     setSubmitting(true);
     setValidationError(null);
     try {
-      setCompletedBooking(await onBookingComplete(booking));
+      if (!formToken.current) throw new Error('Reservation verification expired. Please refresh seating and try again.');
+      setCompletedBooking(await onBookingComplete(booking, idempotency.current.key, formToken.current, website));
+      idempotency.current = null;
     } catch (error) {
       setValidationError(error instanceof Error ? error.message : 'We could not send the reservation. Please try again.');
     } finally {
@@ -220,9 +235,12 @@ export function BookingWizard({
 
   const resetBooking = () => {
     setFormData(createStartingState());
+    setWebsite('');
     setCurrentStep(1);
     setCompletedBooking(null);
     setValidationError(null);
+    formToken.current = '';
+    idempotency.current = null;
   };
 
   if (completedBooking) {
@@ -389,6 +407,7 @@ export function BookingWizard({
                 <p>Share one way for the cafe team to contact you about this request.</p>
               </div>
               <div className="booking-form-grid">
+                <label className="booking-honeypot" aria-hidden="true">Website<input type="text" name="website" tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} /></label>
                 <label htmlFor="guest-name">Your name<input id="guest-name" type="text" autoComplete="name" maxLength={100} value={formData.customerName} onChange={(event) => setFormData((previous) => ({ ...previous, customerName: event.target.value }))} placeholder="Full name" /></label>
                 <label htmlFor="guest-phone">Phone number <span>(optional if you add email)</span><input id="guest-phone" type="tel" autoComplete="tel" maxLength={40} value={formData.customerPhone} onChange={(event) => setFormData((previous) => ({ ...previous, customerPhone: event.target.value }))} placeholder="(555) 014-2020" /></label>
                 <label htmlFor="guest-email">Email address <span>(optional if you add phone)</span><input id="guest-email" type="email" autoComplete="email" value={formData.customerEmail} onChange={(event) => setFormData((previous) => ({ ...previous, customerEmail: event.target.value }))} placeholder="you@example.com" /></label>

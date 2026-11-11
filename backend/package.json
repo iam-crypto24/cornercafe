@@ -1,0 +1,24 @@
+{
+  "name": "corner-cafe-backend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": { "node": ">=22 <25" },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --env-file=.env --watch src/server.js",
+    "db:migrate": "node --env-file=.env src/database/migrate.js",
+    "db:import-legacy": "node --env-file=.env scripts/import-legacy-state.js",
+    "db:setup-owner": "node --env-file=.env scripts/setup-owner.js",
+    "test": "node --test",
+    "lint": "node --check src/server.js && node --check src/app.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.14"
+  }
+}

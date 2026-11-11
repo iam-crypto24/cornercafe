@@ -25,3 +25,12 @@ dist-ssr
 
 .vercel
 .env*
+!.env.example
+backend/.env*
+!backend/.env.example
+backend/node_modules
+backend/dist
+migration-tools/node_modules
+*.legacy-state.json
+*.reference-map.json
+*.sql.gz

@@ -1,32 +1,41 @@
-# The Corner Cafe backend
+# Backend design
 
-## Deployed implementation
+## Runtime and data
 
-- **Runtime:** Vercel Node.js serverless function at `api/[...route].js`.
-- **Storage:** private Vercel Blob store `corner-cafe-private-data`, using one JSON state document. Reads bypass CDN caching. Writes use ETag compare-and-swap retries, so concurrent reservation creation and status updates cannot silently overwrite each other.
-- **Authentication:** individual owner/staff accounts, salted scrypt password hashes, random session tokens stored as hashes, 12-hour `HttpOnly; SameSite=Lax` cookies, login attempt limiting, and owner-only team administration.
-- **Account creation:** There is no public registration or owner-bootstrap endpoint. The existing owner is the only account that can create staff logins, through the authenticated Team access panel. The API always creates new accounts with the `staff` role.
+- `backend/src/server.js` validates production configuration, applies PostgreSQL migrations, starts Express on `0.0.0.0:$PORT`, and handles SIGTERM/SIGINT.
+- `backend/src/app.js` defines the HTTP API, explicit CORS policy, request limits, rate limits, authentication, CSRF, and safe errors.
+- `backend/src/services/auth.js` handles scrypt verification, hashed database sessions, owner/staff permissions, and revocation.
+- `backend/src/repositories/reservations.js` contains parameterized SQL for availability, reservation creation, public status, staff listings, and transitions.
+- `backend/src/database/migrations/` contains versioned PostgreSQL schema; migration checksums prevent changing an applied migration.
+- `backend/src/data/catalog.json` is shared by the backend and TypeScript frontend for 27 tables, menu items, and time slots.
 
-## Endpoints
+Production hosting is Vercel for the static React/Vite frontend, Render for the Node API, and Render PostgreSQL for persistent state. The frontend uses public `VITE_API_BASE_URL`; no backend handler remains under `api/`.
+
+## API inventory
 
 | Method | Path | Access | Purpose |
 | --- | --- | --- | --- |
-| `GET` | `/api/health` | Public | API and storage readiness |
-| `GET` | `/api/availability?date=&partySize=` | Public | Tables available for a date and group size |
-| `GET` | `/api/availability?date=&partySize=&tableId=` | Public | Available times for a selected table |
-| `POST` | `/api/reservations` | Public | Create a pending reservation |
-| `GET` | `/api/reservation-status?reference=` | Public | Return limited request status details |
-| `POST` | `/api/admin/auth?action=login` | Public, rate limited | Authenticate and set the session cookie |
-| `GET` | `/api/admin/auth?action=session` | Staff | Restore the current staff identity |
-| `POST` | `/api/admin/auth?action=logout` | Staff | Revoke session and clear cookie |
-| `GET` | `/api/admin/reservations` | Staff | Read shared reservation requests |
-| `PATCH` | `/api/admin/reservation?id=` | Staff | Confirm or cancel a request |
-| `GET` | `/api/admin/tables` | Staff | Read the seating layout and availability |
-| `GET`, `POST` | `/api/admin/users` | Owner | List or create individual staff accounts |
-| `PATCH` | `/api/admin/user?id=` | Owner | Deactivate or reactivate an account |
+| `GET` | `/api/health` | Public | Database readiness |
+| `GET` | `/api/availability` | Public, limited | Seating and signed form-age token |
+| `POST` | `/api/reservations` | Public, origin checked, limited | Idempotent reservation request |
+| `GET` | `/api/reservation-status?reference=` | Public, limited | Reference and status only |
+| `GET` | `/api/reservations/:reference` | Public alias, limited | Same status lookup |
+| `POST` | `/api/admin/auth?action=login` | Public, origin checked, limited | Sign in and set HttpOnly cookie |
+| `GET` | `/api/admin/auth?action=session` | Authenticated | Restore staff identity and CSRF token |
+| `POST` | `/api/admin/auth/logout` | Authenticated, CSRF | Revoke session |
+| `POST` | `/api/admin/auth/password` | Authenticated, CSRF | Change password and revoke sessions |
+| `GET` | `/api/admin/reservations` | Staff or owner | List guest requests |
+| `PATCH` | `/api/admin/reservation?id=` | Staff or owner, CSRF | Confirm or cancel request |
+| `PATCH` | `/api/admin/reservations/:id` | Staff or owner, CSRF | Status alias |
+| `GET` | `/api/admin/tables` | Staff or owner | Seating and availability |
+| `GET`, `POST` | `/api/admin/users` | Owner (`POST` CSRF) | List or create staff accounts |
+| `PATCH` | `/api/admin/user?id=` | Owner, CSRF | Deactivate/reactivate staff |
+| `PATCH` | `/api/admin/users/:id` | Owner, CSRF | Account status alias |
 
-## Operational limits
+There is no public customer edit/cancel route, password reset, or email/SMS integration.
 
-The current store is a single private JSON document, intended for low-volume cafe use. Conditional updates protect booking conflicts but all writes contend on one document, and the Blob store is not a relational database. Move to Postgres with transactional constraints before relying on the system for high traffic, extensive reporting, formal backup/retention requirements, or multi-location inventory. Vercel Blob usage is billed according to the account's current plan and usage.
+## Data integrity
 
-The project currently does not send email/SMS confirmations, provide password reset, keep a separate audit log, or automate backups. Reservation requests appear in the staff dashboard, which refreshes every 30 seconds; staff can also refresh manually.
+`reservations_no_table_overlap` is a PostgreSQL exclusion constraint on table ID and a generated 90-minute range. Reservation creation locks on idempotency key, verifies capacity and active seating, uses server-owned prices, and commits the booking, pre-order, status event, and idempotency response in one transaction. Cancellation frees the table; cancelled requests cannot be restored through the admin API.
+
+See [DATABASE_MIGRATION.md](./DATABASE_MIGRATION.md) for the guarded one-time Blob transfer and rollback limits.

@@ -1,0 +1,62 @@
+services:
+  - type: web
+    name: corner-cafe-api
+    runtime: node
+    plan: 0.5c-512mb
+    region: singapore
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: false
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24.21.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: corner-cafe-postgres
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: CAFE_TIME_ZONE
+        sync: false
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: COOKIE_SAME_SITE
+        value: lax
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "120"
+      - key: LOGIN_RATE_LIMIT_MAX
+        value: "8"
+      - key: LOGIN_IP_RATE_LIMIT_MAX
+        value: "30"
+      - key: BOOKING_RATE_LIMIT_MAX
+        value: "8"
+      - key: BOOKING_CONTACT_RATE_LIMIT_MAX
+        value: "4"
+      - key: LOOKUP_RATE_LIMIT_MAX
+        value: "20"
+      - key: DUPLICATE_WINDOW_MS
+        value: "600000"
+      - key: BOT_FORM_MIN_AGE_MS
+        value: "1500"
+      - key: PG_POOL_MAX
+        value: "10"
+
+databases:
+  - name: corner-cafe-postgres
+    plan: 0.1c-256mb
+    region: singapore
+    databaseName: corner_cafe
+    user: corner_cafe_app
+    ipAllowList: []

@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { UserPlus, UserRoundX } from 'lucide-react';
+import { apiFetch, apiJson } from '../lib/api';
 
 interface AdminUser {
   id: string;
@@ -22,9 +23,8 @@ export function AdminTeam() {
   const load = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/admin/users', { credentials: 'include' });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result?.error?.message ?? 'Could not load team accounts.');
+      const response = await apiFetch('/api/admin/users');
+      const result = await apiJson<{ admins: AdminUser[] }>(response);
       setAdmins(result.admins ?? []);
       setMessage(null);
     } catch (reason) {
@@ -41,12 +41,11 @@ export function AdminTeam() {
     setSaving(true);
     setMessage(null);
     try {
-      const response = await fetch('/api/admin/users', {
-        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      const response = await apiFetch('/api/admin/users', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, role: 'staff' }),
       });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result?.error?.message ?? 'Could not add this staff account.');
+      const result = await apiJson<{ admin: AdminUser }>(response);
       setAdmins((previous) => [...previous, result.admin]);
       setName(''); setEmail(''); setPassword('');
       setMessage('Staff account created. Share its email and temporary password securely.');
@@ -60,12 +59,11 @@ export function AdminTeam() {
   const toggleAdmin = async (admin: AdminUser) => {
     setMessage(null);
     try {
-      const response = await fetch(`/api/admin/user?id=${encodeURIComponent(admin.id)}`, {
-        method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      const response = await apiFetch(`/api/admin/user?id=${encodeURIComponent(admin.id)}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !admin.isActive }),
       });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result?.error?.message ?? 'Could not update this account.');
+      const result = await apiJson<{ admin: AdminUser }>(response);
       setAdmins((previous) => previous.map((item) => item.id === admin.id ? result.admin : item));
     } catch (reason) {
       setMessage(reason instanceof Error ? reason.message : 'Could not update this account.');

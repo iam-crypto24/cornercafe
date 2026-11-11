@@ -1,0 +1,7 @@
+{
+  "name": "corner-cafe-legacy-export",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22 <25" },
+  "scripts": { "export": "node export-vercel-blob.js" }
+}

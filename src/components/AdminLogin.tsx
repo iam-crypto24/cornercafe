@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, Coffee, Eye, EyeOff, LockKeyhole } from 'lucide-
 
 interface AdminLoginProps {
   onLogin: (email: string, password: string) => Promise<void>;
-  onPreview: () => void;
+  onPreview?: () => void;
   onBack: () => void;
 }
 
@@ -86,11 +86,11 @@ export function AdminLogin({ onLogin, onPreview, onBack }: AdminLoginProps) {
           </button>
         </form>
 
-        <div className="login-divider"><span>or</span></div>
-        <button type="button" className="preview-button" onClick={onPreview}>
-          Preview staff dashboard
-        </button>
-        <p className="login-footnote">Preview uses sample bookings stored in this browser.</p>
+        {onPreview && <>
+          <div className="login-divider"><span>or</span></div>
+          <button type="button" className="preview-button" onClick={onPreview}>Preview staff dashboard</button>
+          <p className="login-footnote">Preview uses sample bookings for this session.</p>
+        </>}
       </section>
 
       <p className="login-security-note">Your staff account is managed by the cafe.</p>

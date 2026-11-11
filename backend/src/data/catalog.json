@@ -1,0 +1,658 @@
+{
+  "tables": [
+    {
+      "id": "T1",
+      "name": "Window Corner",
+      "zone": "Window",
+      "floor": 1,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 75,
+        "y": 80,
+        "width": 52,
+        "height": 52,
+        "shape": "rect",
+        "description": "Corner table with dual-aspect street and boulevard view.",
+        "features": [
+          "Natural Light",
+          "Street View",
+          "Power Outlet"
+        ]
+      }
+    },
+    {
+      "id": "T2",
+      "name": "Sunlight Window 2",
+      "zone": "Window",
+      "floor": 1,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 175,
+        "y": 80,
+        "width": 52,
+        "height": 52,
+        "shape": "rect",
+        "description": "Direct window pane seating, ideal for couples or solo reading.",
+        "features": [
+          "Natural Light",
+          "Street View"
+        ]
+      }
+    },
+    {
+      "id": "T3",
+      "name": "Window Bay Booth",
+      "zone": "Window",
+      "floor": 1,
+      "capacity": 4,
+      "isAvailable": true,
+      "layout": {
+        "x": 295,
+        "y": 80,
+        "width": 86,
+        "height": 54,
+        "shape": "rect",
+        "description": "Spacious padded booth overlooking the flower boxes outside.",
+        "features": [
+          "Plush Booth Seating",
+          "Sunlit",
+          "Spacious"
+        ]
+      }
+    },
+    {
+      "id": "T4",
+      "name": "Window Bistro",
+      "zone": "Window",
+      "floor": 1,
+      "capacity": 2,
+      "isAvailable": false,
+      "layout": {
+        "x": 420,
+        "y": 80,
+        "width": 52,
+        "height": 52,
+        "shape": "rect",
+        "description": "Cozy two-seater right beside the morning light.",
+        "features": [
+          "Street View",
+          "Natural Light"
+        ]
+      }
+    },
+    {
+      "id": "T5",
+      "name": "Window Alcove 4",
+      "zone": "Window",
+      "floor": 1,
+      "capacity": 4,
+      "isAvailable": true,
+      "layout": {
+        "x": 520,
+        "y": 80,
+        "width": 86,
+        "height": 54,
+        "shape": "rect",
+        "description": "Sunlit 4-top table close to the barista brew station.",
+        "features": [
+          "Coffee Aromas",
+          "Natural Light",
+          "Comfort Seating"
+        ]
+      }
+    },
+    {
+      "id": "T6",
+      "name": "Wall Banquette 1",
+      "zone": "Indoor",
+      "floor": 2,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 80,
+        "y": 215,
+        "width": 52,
+        "height": 52,
+        "shape": "rect",
+        "description": "Tucked against the cedar wood paneling with soft amber sconce.",
+        "features": [
+          "Quiet Corner",
+          "Soft Banquette",
+          "Power Socket"
+        ]
+      }
+    },
+    {
+      "id": "T7",
+      "name": "Center Salon Table",
+      "zone": "Indoor",
+      "floor": 2,
+      "capacity": 4,
+      "isAvailable": true,
+      "layout": {
+        "x": 205,
+        "y": 215,
+        "width": 86,
+        "height": 54,
+        "shape": "rect",
+        "description": "Center dining table under custom woven pendant lighting.",
+        "features": [
+          "Spacious",
+          "Central Ambience"
+        ]
+      }
+    },
+    {
+      "id": "T8",
+      "name": "Communal Harvest Oak",
+      "zone": "Indoor",
+      "floor": 2,
+      "capacity": 6,
+      "isAvailable": true,
+      "layout": {
+        "x": 350,
+        "y": 215,
+        "width": 116,
+        "height": 58,
+        "shape": "rect",
+        "description": "Solid Japanese oak banquet table for groups and families.",
+        "features": [
+          "Group Seating",
+          "Solid Oak Table",
+          "Roomy"
+        ]
+      }
+    },
+    {
+      "id": "T9",
+      "name": "Barista Bar Flank",
+      "zone": "Indoor",
+      "floor": 2,
+      "capacity": 2,
+      "isAvailable": false,
+      "layout": {
+        "x": 520,
+        "y": 215,
+        "width": 52,
+        "height": 52,
+        "shape": "rect",
+        "description": "Watch the siphon masters and latte artists at work.",
+        "features": [
+          "Brew Bar View",
+          "Lively Vibe"
+        ]
+      }
+    },
+    {
+      "id": "T10",
+      "name": "Library Bookshelf Nook",
+      "zone": "Indoor",
+      "floor": 2,
+      "capacity": 4,
+      "isAvailable": true,
+      "layout": {
+        "x": 105,
+        "y": 345,
+        "width": 86,
+        "height": 54,
+        "shape": "rect",
+        "description": "Flanked by curated Japanese design and art monographs.",
+        "features": [
+          "Bookshelf Access",
+          "Cozy Reading Light",
+          "Quiet"
+        ]
+      }
+    },
+    {
+      "id": "T11",
+      "name": "Acoustic Wall Seat",
+      "zone": "Indoor",
+      "floor": 2,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 250,
+        "y": 345,
+        "width": 52,
+        "height": 52,
+        "shape": "rect",
+        "description": "Padded low-noise corner for confidential chats or focused study.",
+        "features": [
+          "Intimate Vibe",
+          "Low Noise"
+        ]
+      }
+    },
+    {
+      "id": "T12",
+      "name": "Garden Round Bistro",
+      "zone": "Patio",
+      "floor": 3,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 675,
+        "y": 275,
+        "width": 56,
+        "height": 56,
+        "shape": "round",
+        "description": "Cast iron bistro round under flowering jasmine vines.",
+        "features": [
+          "Fresh Air",
+          "Garden Foliage",
+          "Breezy"
+        ]
+      }
+    },
+    {
+      "id": "T13",
+      "name": "Pergola Terrace 4",
+      "zone": "Patio",
+      "floor": 3,
+      "capacity": 4,
+      "isAvailable": false,
+      "layout": {
+        "x": 785,
+        "y": 275,
+        "width": 82,
+        "height": 54,
+        "shape": "rect",
+        "description": "Covered teak outdoor table sheltered under canvas awning.",
+        "features": [
+          "Shaded Patio",
+          "Outdoor Breeze"
+        ]
+      }
+    },
+    {
+      "id": "T14",
+      "name": "Veranda Family Table",
+      "zone": "Patio",
+      "floor": 3,
+      "capacity": 6,
+      "isAvailable": true,
+      "layout": {
+        "x": 730,
+        "y": 395,
+        "width": 114,
+        "height": 58,
+        "shape": "rect",
+        "description": "Large cedar terrace bench table surrounded by potted bamboo.",
+        "features": [
+          "Outdoor Group",
+          "Garden View",
+          "Covered"
+        ]
+      }
+    },
+    {
+      "id": "T15",
+      "name": "Window Table 6",
+      "zone": "Window",
+      "floor": 1,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 75,
+        "y": 150,
+        "width": 48,
+        "height": 48,
+        "shape": "rect",
+        "description": "Window floor seating for up to 2 guests.",
+        "features": [
+          "Natural Light",
+          "Street View"
+        ]
+      }
+    },
+    {
+      "id": "T16",
+      "name": "Window Table 7",
+      "zone": "Window",
+      "floor": 1,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 205,
+        "y": 150,
+        "width": 48,
+        "height": 48,
+        "shape": "rect",
+        "description": "Window floor seating for up to 2 guests.",
+        "features": [
+          "Natural Light",
+          "Street View"
+        ]
+      }
+    },
+    {
+      "id": "T17",
+      "name": "Window Table 8",
+      "zone": "Window",
+      "floor": 1,
+      "capacity": 4,
+      "isAvailable": true,
+      "layout": {
+        "x": 335,
+        "y": 150,
+        "width": 58,
+        "height": 48,
+        "shape": "rect",
+        "description": "Window floor seating for up to 4 guests.",
+        "features": [
+          "Natural Light",
+          "Street View"
+        ]
+      }
+    },
+    {
+      "id": "T18",
+      "name": "Window Table 9",
+      "zone": "Window",
+      "floor": 1,
+      "capacity": 4,
+      "isAvailable": true,
+      "layout": {
+        "x": 465,
+        "y": 150,
+        "width": 58,
+        "height": 48,
+        "shape": "rect",
+        "description": "Window floor seating for up to 4 guests.",
+        "features": [
+          "Natural Light",
+          "Street View"
+        ]
+      }
+    },
+    {
+      "id": "T19",
+      "name": "Salon Table 7",
+      "zone": "Indoor",
+      "floor": 2,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 385,
+        "y": 345,
+        "width": 48,
+        "height": 48,
+        "shape": "rect",
+        "description": "Indoor floor seating for up to 2 guests.",
+        "features": [
+          "Indoor Seating"
+        ]
+      }
+    },
+    {
+      "id": "T20",
+      "name": "Salon Table 8",
+      "zone": "Indoor",
+      "floor": 2,
+      "capacity": 4,
+      "isAvailable": true,
+      "layout": {
+        "x": 500,
+        "y": 345,
+        "width": 58,
+        "height": 48,
+        "shape": "rect",
+        "description": "Indoor floor seating for up to 4 guests.",
+        "features": [
+          "Indoor Seating"
+        ]
+      }
+    },
+    {
+      "id": "T21",
+      "name": "Salon Table 9",
+      "zone": "Indoor",
+      "floor": 2,
+      "capacity": 6,
+      "isAvailable": true,
+      "layout": {
+        "x": 505,
+        "y": 405,
+        "width": 68,
+        "height": 48,
+        "shape": "rect",
+        "description": "Indoor floor seating for up to 6 guests.",
+        "features": [
+          "Indoor Seating"
+        ]
+      }
+    },
+    {
+      "id": "T22",
+      "name": "Patio Table 4",
+      "zone": "Patio",
+      "floor": 3,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 660,
+        "y": 220,
+        "width": 48,
+        "height": 48,
+        "shape": "rect",
+        "description": "Patio floor seating for up to 2 guests.",
+        "features": [
+          "Fresh Air",
+          "Garden View"
+        ]
+      }
+    },
+    {
+      "id": "T23",
+      "name": "Patio Table 5",
+      "zone": "Patio",
+      "floor": 3,
+      "capacity": 2,
+      "isAvailable": true,
+      "layout": {
+        "x": 735,
+        "y": 220,
+        "width": 48,
+        "height": 48,
+        "shape": "rect",
+        "description": "Patio floor seating for up to 2 guests.",
+        "features": [
+          "Fresh Air",
+          "Garden View"
+        ]
+      }
+    },
+    {
+      "id": "T24",
+      "name": "Patio Table 6",
+      "zone": "Patio",
+      "floor": 3,
+      "capacity": 4,
+      "isAvailable": true,
+      "layout": {
+        "x": 810,
+        "y": 220,
+        "width": 58,
+        "height": 48,
+        "shape": "rect",
+        "description": "Patio floor seating for up to 4 guests.",
+        "features": [
+          "Fresh Air",
+          "Garden View"
+        ]
+      }
+    },
+    {
+      "id": "T25",
+      "name": "Patio Table 7",
+      "zone": "Patio",
+      "floor": 3,
+      "capacity": 4,
+      "isAvailable": true,
+      "layout": {
+        "x": 660,
+        "y": 365,
+        "width": 58,
+        "height": 48,
+        "shape": "rect",
+        "description": "Patio floor seating for up to 4 guests.",
+        "features": [
+          "Fresh Air",
+          "Garden View"
+        ]
+      }
+    },
+    {
+      "id": "T26",
+      "name": "Patio Table 8",
+      "zone": "Patio",
+      "floor": 3,
+      "capacity": 6,
+      "isAvailable": true,
+      "layout": {
+        "x": 735,
+        "y": 365,
+        "width": 68,
+        "height": 48,
+        "shape": "rect",
+        "description": "Patio floor seating for up to 6 guests.",
+        "features": [
+          "Fresh Air",
+          "Garden View"
+        ]
+      }
+    },
+    {
+      "id": "T27",
+      "name": "Patio Table 9",
+      "zone": "Patio",
+      "floor": 3,
+      "capacity": 6,
+      "isAvailable": true,
+      "layout": {
+        "x": 810,
+        "y": 365,
+        "width": 68,
+        "height": 48,
+        "shape": "rect",
+        "description": "Patio floor seating for up to 6 guests.",
+        "features": [
+          "Fresh Air",
+          "Garden View"
+        ]
+      }
+    }
+  ],
+  "menuItems": [
+    {
+      "id": "m1",
+      "name": "Siphon Pour-Over Reserve",
+      "category": "Coffee & Brews",
+      "price": 6.5,
+      "description": "Single-origin Ethiopian Yirgacheffe brewed slowly with delicate floral notes.",
+      "tags": [
+        "Signature",
+        "Hot"
+      ]
+    },
+    {
+      "id": "m2",
+      "name": "Classic Dark Roast Nel Drip",
+      "category": "Coffee & Brews",
+      "price": 5.5,
+      "description": "Traditional heavy-bodied flannel-filtered extraction with deep cacao finish.",
+      "tags": [
+        "Classic"
+      ]
+    },
+    {
+      "id": "m3",
+      "name": "Iced Einspänner",
+      "category": "Coffee & Brews",
+      "price": 6,
+      "description": "Chilled double espresso crowned with thick chilled velvet cream.",
+      "tags": [
+        "Popular",
+        "Iced"
+      ]
+    },
+    {
+      "id": "m4",
+      "name": "Ceremonial Uji Matcha Latte",
+      "category": "Tea & Matchas",
+      "price": 6.25,
+      "description": "First-harvest Kyoto Uji matcha whisked fresh with whole oat or dairy milk.",
+      "tags": [
+        "Matcha",
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "m5",
+      "name": "Roasted Hojicha Milk Tea",
+      "category": "Tea & Matchas",
+      "price": 5.75,
+      "description": "Earthy toasted green tea with sweet caramel undertones.",
+      "tags": [
+        "Caffeine-light"
+      ]
+    },
+    {
+      "id": "m6",
+      "name": "Castella French Toast",
+      "category": "Pastries & Bakes",
+      "price": 8.5,
+      "description": "Honey sponge soaked overnight in custard, pan-caramelized with salted butter.",
+      "tags": [
+        "Signature"
+      ]
+    },
+    {
+      "id": "m7",
+      "name": "Black Sesame Chiffon Cake",
+      "category": "Pastries & Bakes",
+      "price": 7,
+      "description": "Feather-light sponge scented with toasted sesame and kinako whipped cream.",
+      "tags": [
+        "Fresh Daily"
+      ]
+    },
+    {
+      "id": "m8",
+      "name": "Egg Salad Milk Bread Sando",
+      "category": "Sandwiches & Savory",
+      "price": 9,
+      "description": "Soft-boiled cage-free eggs with Japanese kewpie mayo and fresh chives on shokupan.",
+      "tags": [
+        "Classic Favorite"
+      ]
+    },
+    {
+      "id": "m9",
+      "name": "Miso Caramel Pork Katsu Sando",
+      "category": "Sandwiches & Savory",
+      "price": 13.5,
+      "description": "Crisp panko pork tenderloin, tangy shredded cabbage, dark glaze on thick toast.",
+      "tags": [
+        "Chef Pick"
+      ]
+    }
+  ],
+  "timeSlots": [
+    "08:30 AM",
+    "09:30 AM",
+    "10:30 AM",
+    "11:30 AM",
+    "12:30 PM",
+    "01:30 PM",
+    "02:30 PM",
+    "03:30 PM",
+    "04:30 PM",
+    "05:30 PM",
+    "06:30 PM",
+    "07:30 PM"
+  ]
+}

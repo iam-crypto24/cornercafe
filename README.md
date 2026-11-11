@@ -1,36 +1,52 @@
 # The Corner Cafe
 
-Reservation website and serverless backend deployed on Vercel.
+A React/Vite reservation website with 27 selectable tables across three floors and an independently hosted Node.js/PostgreSQL API.
 
-## Production
+## Architecture
 
-- Website: `https://corner-cafe-booking-redesign.vercel.app`
-- Staff sign-in: `/admin/login`
-- API status: `/api/health`
+```mermaid
+flowchart LR
+  Guest[Guest or staff browser] --> Vercel[Vercel static React app]
+  Vercel -->|HTTPS, credentialed CORS| Render[Render Express API]
+  Render --> PostgreSQL[(Render PostgreSQL)]
+  Export[One-time private Blob export] -. explicit import .-> PostgreSQL
+```
 
-## Backend
-
-The Vercel Node.js API is in `api/[...route].js`. Private Vercel Blob storage holds the shared reservation, table, admin, and session state. Passwords use salted scrypt hashes; staff sessions use random, hashed tokens in `HttpOnly` cookies. Requests are checked server-side for party size, table capacity, menu items, dates, and overlapping reservations. Conditional Blob writes prevent two requests from claiming the same table at once.
-
-Guests can check availability, submit a pending request, and look up a request reference. Staff can sign in with individual accounts, review or confirm/cancel requests, and view the seating map. The owner can create and deactivate staff accounts. The staff dashboard refreshes automatically every 30 seconds.
-
-## Create the first owner
-
-There is no public sign-up or owner setup page. The cafe owner signs in with the owner credentials and creates individual staff logins from **Team access** in the dashboard. Only the owner can create or deactivate staff accounts; new accounts receive staff access.
+Vercel serves only the frontend. Render runs the API and applies versioned SQL migrations at startup. PostgreSQL stores reservations, accounts, hashed sessions, rate limits, and security events. Production secrets belong in provider environment settings; `VITE_*` values are public browser configuration.
 
 ## Local development
 
-`npm run dev` starts the Vite frontend only. To run Vercel API functions and the private Blob integration locally, use the Vercel CLI with the project linked and the development environment pulled:
+Requirements: Node.js 22–24 and PostgreSQL. The backend loads `backend/.env`; Vite loads the root `.env.local`.
 
-```sh
-npm install
-vercel link
-vercel env pull .env.local
-vercel dev
+```powershell
+Copy-Item .env.example .env.local
+Copy-Item backend/.env.example backend/.env
+npm.cmd ci
+npm.cmd ci --prefix backend
+npm.cmd --prefix backend run db:migrate
+npm.cmd --prefix backend run dev
 ```
 
-Keep `.env.local` private and never commit it.
+In another terminal, run `npm.cmd run dev`. Set `DATABASE_URL` in `backend/.env` to a local PostgreSQL database. Set `CAFE_TIME_ZONE` to the cafe’s actual IANA time zone. The frontend calls `http://localhost:8787` unless `VITE_API_BASE_URL` is set.
 
-## Storage note
+Create the first owner only when the database has no active owner. Set `OWNER_NAME`, `OWNER_EMAIL`, and `OWNER_PASSWORD` in the local process environment, then run `npm.cmd --prefix backend run db:setup-owner`. The password must be 16–128 characters. The command never prints it, and there is no public owner-bootstrap endpoint.
 
-This version uses one private JSON document in Blob storage with conditional writes, sized for a small cafe's booking volume. Vercel Blob is usage-based. A relational database is a better fit if the cafe needs higher concurrency, reporting, backups, retention policies, or a large booking history.
+## Checks
+
+After installing both dependency sets, run:
+
+```powershell
+npm.cmd run lint
+npm.cmd run build
+npm.cmd test
+npm.cmd audit
+npm.cmd audit --prefix backend
+```
+
+The suite uses PGlite for PostgreSQL-compatible integration checks. For the additional real-PostgreSQL concurrency test, set `TEST_DATABASE_URL` to a dedicated database whose name contains `test`, set `NODE_ENV=test`, and run `npm.cmd test --prefix backend`. Never point it at production.
+
+## Deploy and security
+
+Follow [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for Render, Vercel, cookies, domains, and environment variables. Follow [DATABASE_MIGRATION.md](./DATABASE_MIGRATION.md) before switching live bookings. Findings and remaining checks are in [SECURITY_AUDIT.md](./SECURITY_AUDIT.md) and [SECURITY_FIXES.md](./SECURITY_FIXES.md).
+
+No Render service or Vercel deployment has been created from this checkout. Provider credentials and a private Blob export are required for live cutover.

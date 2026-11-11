@@ -5,13 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build:backend-data": "tsc --ignoreConfig src/data/cafeData.ts --target ES2022 --module ESNext --skipLibCheck --outDir server",
-    "build": "npm run build:backend-data && tsc -b && vite build",
-    "lint": "oxlint",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint src vite.config.ts backend/src backend/scripts backend/tests",
+    "test": "npm --prefix backend test",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vercel/blob": "^2.9.0",
     "lucide-react": "^1.71.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -19,6 +18,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
+    "@emnapi/core": "^2.0.0-beta.2",
+    "@emnapi/runtime": "^2.0.0-beta.2",
     "@rolldown/plugin-babel": "^0.3.0",
     "@types/babel__core": "^7.20.5",
     "@types/node": "^24.19.2",
